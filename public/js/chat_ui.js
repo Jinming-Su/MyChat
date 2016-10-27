@@ -6,6 +6,7 @@ function chatBodyToBottom() {
 
 function addMessage(_name, _time, _content) {
   var msg_list = $('.msg-list-body');
+      _content = QxEmotion.Parse(_content);
   var tmp_content = '<div class="clearfix msg-wrap">' +
     '<div class="msg-head">';
   if(_name == $.cookie('chat_nickname')) {
@@ -17,7 +18,7 @@ function addMessage(_name, _time, _content) {
       '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;' + _name + '</span>' +
       '<span class="msg-time label label-default pull-left">' +
       '<span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;' + _time + '</span>' +
-    '</div><br>' +
+    '</div>' +
     '<div class="msg-content">'+ _content + '</div>' +
   '</div>';
   msg_list.append(tmp_content);
@@ -26,13 +27,14 @@ function addMessage(_name, _time, _content) {
 
 function addServerMessage(_time, _content) {
   var msg_list = $('.msg-list-body');
+      _content = QxEmotion.Parse(_content);
   var tmp_content = '<div class="clearfix msg-wrap system-msg">' +
     '<div class="msg-head">' +
       '<span class="msg-name label label-default pull-left">' +
       '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;System message</span>' +
       '<span class="msg-time label label-default pull-left">' +
       '<span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;' + _time + '</span>' +
-    '</div><br>' +
+    '</div>' +
     '<div class="msg-content text-muted">'+ _content + '</div>' +
   '</div>';
   msg_list.append(tmp_content);
@@ -109,6 +111,21 @@ function onClickChangeNickname() {
   $('#login-modal').modal('show');
 }
 
+function onClickEmotion() {
+  var emotion_panel = $('.emotion-panel');
+  if(emotion_panel.length == 0) {
+    emotion_panel = createEmotionPanel();
+  }
+  if(emotion_panel.is(':visible')) {
+    emotion_panel.hide(60);
+  } else {
+    var emotion_btn = $('#emotion-btn');
+    emotion_panel.css('left', emotion_btn.offset().left);
+    emotion_panel.css('top', emotion_btn.offset().top - emotion_panel.height() - 5);
+    emotion_panel.show(60);
+  }
+}
+
 //event response
 $('div[role="dialog"]').on('show.bs.modal', function(){
   $(this).css({
@@ -139,4 +156,4 @@ document.onkeydown = function(event) {
   }
 };
 
-$('#input-edit').focus();
+QxEmotion($('#emotion-btn'), $('#input-edit'));

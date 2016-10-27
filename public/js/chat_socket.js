@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://localhost:5211');
 
 socket.on('server_message', function(_message) {
   addServerMessage(getLocalHMS(), _message);
