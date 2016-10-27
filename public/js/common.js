@@ -13,3 +13,7 @@ function getLocalHMS() {
       appendZero(date.getSeconds());
   return hms;
 }
+
+function getStringLength(str) {
+  return str.replace(/[^\u0000-\u00ff]/g,"tt").length;
+}

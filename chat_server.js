@@ -21,8 +21,9 @@ function removeNickname(_nickname) {
 
 io.on('connection', function(_socket) {
   console.log(_socket.id + ': connection');
-  _socket.emit('user_list', JSON.stringify(nickname_list));
-  _socket.emit('server_message', 'Welcome');
+  _socket.emit('user_list', nickname_list);
+  _socket.emit('server_message', 'Welcome to Sjming');
+  _socket.emit('need_nickname');
 
   _socket.on('disconnect', function() {
     console.log(_socket.id + ': disconnect');
@@ -33,7 +34,7 @@ io.on('connection', function(_socket) {
   });
 
   _socket.on('change_nickname', function(_nickname) {
-    _nickname = _nickname.trim();
+    _nickname = xssEscape(_nickname.trim());
     console.log(_socket.id + ': change_nickname(' + _nickname + ')');
     //cal Chinese
     var name_len = _nickname.replace(/[^\u0000-\u00ff]/g,"tt").length;
@@ -67,8 +68,10 @@ io.on('connection', function(_socket) {
   });
 
   _socket.on('say', function (_content) {
-    _content = _content.trim();
-    _content = xssEscape(_content);
+    if(_socket.nickname == null || _socket.nickname == '') {
+      return _socket.emit('need_nickname');
+    }
+    _content = xssEscape(_content.trim());
     console.log(_socket.id + ': say(' + _content + ')');
     _socket.broadcast.emit('user_say', _socket.nickname, _content);
   });

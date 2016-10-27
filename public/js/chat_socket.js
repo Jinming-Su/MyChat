@@ -4,6 +4,14 @@ socket.on('server_message', function(_message) {
   addServerMessage(getLocalHMS(), _message);
 });
 
+socket.on('need_nickname', function() {
+  if($.cookie('chat_nickname') == null) {
+    $('#login-modal').modal('show');
+  } else {
+    changeNickname($.cookie('chat_nickname'));
+  }
+});
+
 socket.on('change_nickname_error', function(_error_msg) {
   console.log('change_nickname_error:' + _error_msg);
   $("#nickname-error").text(_error_msg);
@@ -13,27 +21,23 @@ socket.on('change_nickname_error', function(_error_msg) {
 
 socket.on('change_nickname_done', function(_old_name, _new_nickname) {
   console.log('change_nickname_done(' + _new_nickname + ',' + _old_name + ')');
-  g_nickname = _new_nickname;
+  $.cookie('chat_nickname', _new_nickname);
   $("#login-modal").modal('hide');
-  $("#my-nickname").text('Nickname: ' + _new_nickname);
+  $("#my-nickname").html('Nickname: ' + _new_nickname);
   if(_old_name != null && _old_name != '') {
     addServerMessage(getLocalHMS(), '[' + _old_name + '] change as [' + _new_nickname + ']');
   }
   updateListCount();
 });
 
-socket.on('say_error', function(_error_msg){
-  console.log('say_error:' + _error_msg);
-});
-
-socket.on('say_done', function() {
-  console.log('say_done');
+socket.on('say_done', function(_nickname, _content) {
+  console.log('user_say(' + _nickname + ', ' + _content + ')');
+  addMessage(_nickname, getLocalHMS(), _content);
 });
 
 socket.on('user_list', function(_list) {
   console.log('user_list(' + _list + ')');
-  var user_list = eval('(' + _list + ')');
-  useUserList(user_list);
+  useUserList(_list);
 });
 
 socket.on('user_change_nickname', function(_old_nickname, _new_nickname) {
@@ -47,12 +51,14 @@ socket.on('user_join', function(_nickname) {
   console.log('user_join(' + _nickname + ')');
   addUserToList(_nickname);
   updateListCount();
+  addServerMessage(getLocalHMS(), '[' + _nickname + '] come in');
 });
 
 socket.on('user_quit', function(_nickname) {
   console.log('user_quit(' + _nickname + ')');
   removeUserFromList(_nickname);
   updateListCount();
+  addServerMessage(getLocalHMS(), '[' + _nickname + '] go out');
 });
 
 socket.on('user_say', function(_nickname, _content) {

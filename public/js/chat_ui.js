@@ -1,5 +1,3 @@
-var g_nickname = '';
-
 // scroll chatbody to bottom
 function chatBodyToBottom() {
   var height = $('.chat-body').prop('scrollHeight');
@@ -9,12 +7,17 @@ function chatBodyToBottom() {
 function addMessage(_name, _time, _content) {
   var msg_list = $('.msg-list-body');
   var tmp_content = '<div class="clearfix msg-wrap">' +
-    '<div class="msg-head">' +
-      '<span class="msg-name label label-primary pull-left">' +
+    '<div class="msg-head">';
+  if(_name == $.cookie('chat_nickname')) {
+    tmp_content += '<span class="msg-name label label-danger pull-left">';
+  } else {
+    tmp_content += '<span class="msg-name label label-primary pull-left">';
+  }
+    tmp_content +=
       '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;' + _name + '</span>' +
       '<span class="msg-time label label-default pull-left">' +
       '<span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;' + _time + '</span>' +
-    '</div>' +
+    '</div><br>' +
     '<div class="msg-content">'+ _content + '</div>' +
   '</div>';
   msg_list.append(tmp_content);
@@ -22,15 +25,15 @@ function addMessage(_name, _time, _content) {
 }
 
 function addServerMessage(_time, _content) {
-  var msg_list = $('.msg-list-bogy');
-  var tmp_content = '<div class="clearfix msg-wrap">' +
+  var msg_list = $('.msg-list-body');
+  var tmp_content = '<div class="clearfix msg-wrap system-msg">' +
     '<div class="msg-head">' +
-      '<span class="msg-name label label-primary pull-left">' +
+      '<span class="msg-name label label-default pull-left">' +
       '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;System message</span>' +
       '<span class="msg-time label label-default pull-left">' +
       '<span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;' + _time + '</span>' +
-    '</div>' +
-    '<div class="msg-content">'+ _content + '</div>' +
+    '</div><br>' +
+    '<div class="msg-content text-muted">'+ _content + '</div>' +
   '</div>';
   msg_list.append(tmp_content);
   chatBodyToBottom();
@@ -51,6 +54,7 @@ function addUserToList(_user) {
 
 function useUserList(_user_list) {
   $('.list-table').html('');
+    addUserToList($.cookie('chat_nickname'));
   for(var i = 0; i < _user_list.length; i++) {
     addUserToList(_user_list[i]);
   }
@@ -58,39 +62,47 @@ function useUserList(_user_list) {
 }
 
 function updateListCount() {
-  var list_count = $('.list-table').find('tr').length;
-  console.log('list_count: ' + list_count);
-  if(g_nickname != '' && g_nickname != null) {
-    list_count = list_count + 1;
-  }
+  var list_count = $('.list-table').find('tr').length + 1;
   $('#list-count').text('Number of online: ' + list_count);
 }
 
 //event
 function onClickSendMessage() {
-  if(g_nickname == '') {
+  if($.cookie('chat_nickname') == '' || $.cookie('chat_nickname') == null) {
     return $('#login-modal').modal('show');
   }
   var edit = $('#input-edit');
-  if(edit.val() == '') {
+  var content = edit.val();
+  if(content == '') {
     return ;
   }
-  var content = xssEscape(edit.val());
   //broadcast`
   say(content);
   //me
-  addMessage('Me', getLocalHMS(), content);
+  addMessage($.cookie('chat_nickname'), getLocalHMS(), content);
   edit.val('');
 }
 
 function onClickApplyNickname() {
-  if($('#nickname-edi').val() == '') {
+  var name = $('#nickname-edit').val();
+  if(name == '') {
     $('#nickname-error').text('Fill in nickname');
     $('#nickname-error').show();
     $('#nickname-edit').focus();
     return ;
   }
-  changeNickname(xssEscape($('#nickname-edit').val()));
+  var name_len = getStringLength(name);
+  if(name_len < 2 || name_len > 16) {
+    $('#nickname-error').html('Nickname length is range 2 - 16');
+    $('#nickname-error').show();
+    return ;
+  }
+  if(name == $.cookie('chat_nickname')) {
+    $('#nickname-error').html('The same as you');
+    $('#nickname-error').show();
+    return ;
+  }
+  changeNickname(name);
 }
 
 function onClickChangeNickname() {
@@ -126,3 +138,5 @@ document.onkeydown = function(event) {
     }
   }
 };
+
+$('#input-edit').focus();
