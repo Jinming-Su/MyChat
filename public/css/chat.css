@@ -1,0 +1,21 @@
+.chat-body{
+    overflow-y:scroll;
+    height:555px;
+    padding:0px;
+}
+
+.list-body{
+    overflow-y:scroll;
+    height:450px;
+    padding:0px;
+}
+
+.msg-list-body{
+    margin:8px;
+}
+
+.list-table{
+    margin-top: -1px;
+    margin-bottom: 0px;
+}
+

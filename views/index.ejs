@@ -5,5 +5,106 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MyChat</title>
+
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/chat.css" rel="stylesheet">
   </head>
+  <body class="container">
+    <div class="row">
+      <!-- chatting -->
+      <div class="col-md-8">
+        <!-- chatting records -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="glyphicon glyghicon-earphone"></span>
+            &nbsp;Chatting records
+          </div>
+          <div class="panle-body chat-body">
+            <div class="msg-list-body">
+
+            </div>
+          </div>
+        </div>
+        <!-- input -->
+        <div class="input-group input-group-lg">
+          <input type="text" class="form-control" id="input-edit" placeholder="Please input message">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" onclick="onClickSendMessage()">
+              Send
+              <span class="glyphicon glyphicon-send"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Personal information-->
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-user"></span>
+              &nbsp;Personal information
+          </div>
+          <div class="panel-body">
+            <div class="col-md-9"><h4 id="my-nickname">Nickname: none</h4></div>
+            <div class="col-md-3">
+              <button class="btn btn-default" onclick="onClickChangeNickname()">Change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Online list-->
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-list"></span>
+            &nbsp;Online list
+          </div>
+          <div class="panel-body list-body">
+            <table class="table table-hover list-table"></table>
+          </div>
+          <div class="panel-footer" id="list-count">Number of online: 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal -->
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal" type="button">
+              <span aria-hidden="true">&nbsp;&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title">Set nickname</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="alert alert-danger" id="nickname-error" role="alert" style="display: none">
+                  <span class="glyphicon glyphicon-remove"></span>
+                  Fill in nickname
+                </div>
+                <div class="input-group">
+                  <span class="input-group-addon">Nickname</span>
+                  <input type="text" class="form-control" id="nickname-edit" placeholder="Input Nickname">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="onClickApplyNickname()">Apply nickname</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/chat_socket.js"></script>
+  <script src="/js/chat_ui.js"></script>
+  </body>
 </html>
