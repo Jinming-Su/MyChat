@@ -1,4 +1,5 @@
 var io = require('socket.io')();
+var xssEscape = require('xss-escape');
 var nickname_list = new Array();
 
 function hasNickname(_nickname) {
@@ -36,8 +37,8 @@ io.on('connection', function(_socket) {
     console.log(_socket.id + ': change_nickname(' + _nickname + ')');
     //cal Chinese
     var name_len = _nickname.replace(/[^\u0000-\u00ff]/g,"tt").length;
-    if(name_len < 6 || name_len > 16) {
-      return _socket.emit('change_nickname_error', 'Nickname length is range 6 - 16');
+    if(name_len < 2 || name_len > 16) {
+      return _socket.emit('change_nickname_error', 'Nickname length is range 2 - 16');
     }
     if(_socket.nickname == _nickname) {
       return _socket.emit('change_nickname_error', 'The same as you');
@@ -67,6 +68,7 @@ io.on('connection', function(_socket) {
 
   _socket.on('say', function (_content) {
     _content = _content.trim();
+    _content = xssEscape(_content);
     console.log(_socket.id + ': say(' + _content + ')');
     _socket.broadcast.emit('user_say', _socket.nickname, _content);
   });

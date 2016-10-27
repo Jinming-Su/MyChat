@@ -75,10 +75,11 @@ function onClickSendMessage() {
   if(edit.val() == '') {
     return ;
   }
+  var content = xssEscape(edit.val());
   //broadcast`
-  say(edit.val());
+  say(content);
   //me
-  addMessage('Me', getLocalHMS(), edit.val());
+  addMessage('Me', getLocalHMS(), content);
   edit.val('');
 }
 
@@ -89,7 +90,7 @@ function onClickApplyNickname() {
     $('#nickname-edit').focus();
     return ;
   }
-  changeNickname($('#nickname-edit').val());
+  changeNickname(xssEscape($('#nickname-edit').val()));
 }
 
 function onClickChangeNickname() {
