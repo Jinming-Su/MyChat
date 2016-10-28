@@ -56,7 +56,6 @@ function addUserToList(_user) {
 
 function useUserList(_user_list) {
   $('.list-table').html('');
-    addUserToList($.cookie('chat_nickname'));
   for(var i = 0; i < _user_list.length; i++) {
     addUserToList(_user_list[i]);
   }
@@ -109,21 +108,6 @@ function onClickApplyNickname() {
 
 function onClickChangeNickname() {
   $('#login-modal').modal('show');
-}
-
-function onClickEmotion() {
-  var emotion_panel = $('.emotion-panel');
-  if(emotion_panel.length == 0) {
-    emotion_panel = createEmotionPanel();
-  }
-  if(emotion_panel.is(':visible')) {
-    emotion_panel.hide(60);
-  } else {
-    var emotion_btn = $('#emotion-btn');
-    emotion_panel.css('left', emotion_btn.offset().left);
-    emotion_panel.css('top', emotion_btn.offset().top - emotion_panel.height() - 5);
-    emotion_panel.show(60);
-  }
 }
 
 //event response
